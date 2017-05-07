@@ -1,13 +1,24 @@
+//Langton's Ant Map Generator
+//To do:
+//Add mountain generator
+//Keep teleportation markers on land only
+//use a diceroll to encode different city types
+//Add desert generator
+//Add user input options for colors
+//add start menu that takes grid size, terrain type, start position, etc. as parameters
+
+
+
 //define table sizeToContent
-var tableSize = 101;
+var tableSize = 51;
 
 //get the table element
 var myTable = document.createElement("table");
 
 //set some attributes
 
-myTable.style.width = '1000px';
-myTable.style.height = '500px';
+myTable.style.width = '600px';
+myTable.style.height = '300px';
 myTable.style.marginLeft = 'auto';
 myTable.style.marginRight = 'auto';
 myTable.cellSpacing = "0px";
@@ -42,13 +53,13 @@ function addCell(content, whichRow, whichKind, array){
 	cell.style.color = "green";
 	var randNum = (Math.floor(Math.random() * 8) + 1)
 	if(randNum < 3){
-		cell.style.backgroundColor = "darkblue";
+		cell.style.backgroundColor = "#336699";
 	}
 	else if(randNum < 5){
-		cell.style.backgroundColor = "blue";
+		cell.style.backgroundColor = "#2d5986";
 	}
 	else{
-		cell.style.backgroundColor = "mediumblue";
+		cell.style.backgroundColor = "#264d73";
 	}
 	
 	if (whichKind == "th"){
@@ -87,11 +98,17 @@ for(var x = 0; x < tableSize; x++){
 document.body.appendChild(myTable);
 
 //designate starting "selected" cell
-var half = Math.round(tableSize/2);
-var halftimes = half * (tableSize + 1);
-var x = tableSize + 2 + halftimes;
+//var half = Math.round(tableSize/2);
+//var halftimes = half * (tableSize + 1);
+//var x = tableSize + 2 + halftimes;
+
+//or start random
+var tableSq = Math.pow(tableSize, 2);
+var x = (Math.floor(Math.random() * tableSq)) + (tableSize + 1);
+
+//PUT THE CELL IN THE MAP!!!!!
 var currentCell = document.getElementById("newCell" + x);
-//console.log("ACTIVE McCELL: " + currentCell.id);
+console.log("ACTIVE McCELL: " + currentCell.id);
 
 function randomLocation(){
 	var tableSquared = Math.pow(tableSize, 2);
@@ -111,7 +128,7 @@ function randomLocation(){
 //Movement Functions
 function visibleSelect(current){
 	current.style.border = "1px solid yellow";
-	currentCell.style.backgroundColor = "pink";
+	currentCell.style.backgroundColor = "burlywood";
 }
 
 function unSelect(current){
@@ -126,31 +143,41 @@ function markIt(){
 	currentCell.style.backgroundColor = "yellow";
 }
 
+function markRiver(){
+	currentCell.style.backgroundColor = "#2d5986";
+}
+
 function markW(){
 	if(color == "o"){
-		var randNum = (Math.floor(Math.random() * 20) + 1);
-		if(randNum < 20){
-		currentCell.style.backgroundColor = "forestgreen";
+		var randNum = (Math.floor(Math.random() * 40) + 1);
+		if(randNum < 40){
+		currentCell.style.backgroundColor = "#267326";
 		}
 		else{
-			currentCell.style.backgroundColor = "deeppink";
+			currentCell.style.backgroundColor = "#cc4400";
 		}
 	}
 	else{
-		currentCell.style.backgroundColor = "burlywood";
+		var randNum = (Math.floor(Math.random() * 5) + 1);
+		if(randNum < 4){
+		currentCell.style.backgroundColor = "tan";
+		}
+		else{
+			currentCell.style.backgroundColor = "#fff2c";
+		}
 	}
 }
 
 function markB(){
 		var randNum = (Math.floor(Math.random() * 20) + 1);
 		if(randNum < 15){
-		currentCell.style.backgroundColor = "green";
+		currentCell.style.backgroundColor = "#248f24";
 		}
 		else if(randNum < 17){
-		currentCell.style.backgroundColor = "darkgreen";
+		currentCell.style.backgroundColor = "#2eb82e";
 		}
 		else{
-			currentCell.style.backgroundColor = "darkolivegreen";
+			currentCell.style.backgroundColor = "#29a329";
 		}
 }
 
@@ -166,7 +193,30 @@ function goRight(){
 	}
 }
 
-function goLeft(){
+function goRightUnmarked(){
+	x = (x + 1);
+	if(x < (tableSize) * (tableSize + 1) && (x >= (tableSize + 2)) && ((x - 1) % tableSize) != 0){
+		unSelect(currentCell);
+		currentCell = document.getElementById("newCell" + x);
+	}
+	else{
+		hopRandom("right");
+	}
+}
+
+function goLeft(isMarked){
+	if(isMarked == "unmarked"){
+	x = (x - 1);
+	if((x >= (tableSize + 2)) && ((x - 1) % tableSize != 0)){
+		unSelect(currentCell);
+		currentCell = document.getElementById("newCell" + x);
+		//visibleSelect(currentCell);
+	}
+	else{
+		hopRandom("left");
+	}	
+	}
+	else{
 	x = (x - 1);
 	if((x >= (tableSize + 2)) && ((x - 1) % tableSize != 0)){
 		unSelect(currentCell);
@@ -175,6 +225,7 @@ function goLeft(){
 	}
 	else{
 		hopRandom("left");
+	}
 	}
 }
 
@@ -200,6 +251,9 @@ function hopRandom(dir){
 		else if(dir == "up"){
 			goUp();
 		}
+		else if(dir == "none"){
+			
+		}
 		else{
 			goDown();
 		}
@@ -211,19 +265,44 @@ function hopRandom(dir){
 		}
 }
 
-function goUp(){
+function goUp(isMarked){
+	if(isMarked == "unmarked"){
 	x = (x - tableSize);
 	if(x > tableSize){
 		unSelect(currentCell);
 		currentCell = document.getElementById("newCell" + x);
-		visibleSelect(currentCell);
+		//visibleSelect(currentCell);
 	}
 	else{
 		hopRandom("up");
 	}
+	}
+	else{
+		x = (x - tableSize);
+		if(x > tableSize){
+			unSelect(currentCell);
+			currentCell = document.getElementById("newCell" + x);
+			visibleSelect(currentCell);
+		}
+	else{
+		hopRandom("up");
+		}
+	}
 }
 
-function goDown(){
+function goDown(isMarked){
+	if(isMarked == "unmarked"){
+		x = (x + tableSize);
+		if(x <= (tableSize + 1) * (tableSize)){
+		unSelect(currentCell);
+		currentCell = document.getElementById("newCell" + x);
+		//visibleSelect(currentCell);
+	}
+	else{
+		hopRandom("down");
+	}
+	}
+	else{
 	x = (x + tableSize);
 	if(x <= (tableSize + 1) * (tableSize)){
 		unSelect(currentCell);
@@ -233,6 +312,66 @@ function goDown(){
 	else{
 		hopRandom("down");
 	}
+	}
+}
+
+function goRiver(){
+	hopRandom("none");
+	var riverLength = tableSize;
+	
+	
+	var pickDir = (Math.floor(Math.random() * 2)) + (1);
+	
+	
+	for(var i = 0; i < riverLength; i++){
+		markRiver();
+		
+		if(pickDir == 1){
+		
+		//generally east river:
+			var thisMove = (Math.floor(Math.random() * 6)) + (1);
+			//up and right
+			if(thisMove < 3){
+				goRightUnmarked();
+				goUp("unmarked");
+			}
+			else if(thisMove < 5){
+			//up
+			goUp("unmarked");
+			}
+			else if(thisMove < 6){
+			//go right
+			goRightUnmarked();
+			}
+			else{
+			//go right and down
+			goRightUnmarked();
+			goDown("unmarked");
+			}
+		}
+		else{
+		//generally west river:
+			var thisMove = (Math.floor(Math.random() * 6)) + (1);
+			//up and left
+			if(thisMove < 3){
+				goLeft("unmarked");
+				goUp("unmarked");
+			}
+			else if(thisMove < 5){
+			//up
+			goUp("unmarked");
+			}
+			else if(thisMove < 6){
+			//go left
+			goLeft("unmarked");
+			}
+			else{
+			//go left and down
+			goLeft("unmarked");
+			goDown("unmarked");
+			}
+		}
+	}
 }
 
 function goAntStyle(){
@@ -240,7 +379,7 @@ function goAntStyle(){
 	var direction = 'N';
 	color = currentCell.innerHTML;
 	
-	for(var i = 0; i < 44000; i++){
+	for(var i = 0; i < 1000; i++){
 		
 	if(color != '-'){
 		
@@ -323,7 +462,7 @@ var butRt = document.createElement("button");
 	butRt.id = "butRt";
 	butRt.style.width = '25%';
 	butRt.style.height = '20px';
-	var rtLabel = document.createTextNode("RIGHT");
+	var rtLabel = document.createTextNode("Add River");
 	butRt.appendChild(rtLabel);
 	butRt.id = "butRt";
 	
@@ -355,7 +494,7 @@ var butM = document.createElement("button");
 
 
 document.getElementById("butM").addEventListener("click", goAntStyle);
-document.getElementById("butRt").addEventListener("click", goRight);
+document.getElementById("butRt").addEventListener("click", goRiver);
 document.getElementById("butLft").addEventListener("click", goLeft);
 document.getElementById("butUp").addEventListener("click", goUp);
 document.getElementById("butDwn").addEventListener("click", goDown);
