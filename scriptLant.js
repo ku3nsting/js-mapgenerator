@@ -1,16 +1,17 @@
 //define table sizeToContent
-var tableSize = 100;
+var tableSize = 101;
 
 //get the table element
 var myTable = document.createElement("table");
 
 //set some attributes
 
-myTable.style.width = '850px';
+myTable.style.width = '1000px';
 myTable.style.height = '500px';
 myTable.style.marginLeft = 'auto';
 myTable.style.marginRight = 'auto';
 myTable.cellSpacing = "0px";
+myTable.style.tableLayout = "fixed";
 //myTable.setAttribute('border', '1 px');
 
 //td array to hold ids of all table data elements
@@ -37,8 +38,15 @@ function addCell(content, whichRow, whichKind, array){
 	array.push(cell);
 	cell.style.textAlign = "center";
 	cell.style.fontSize = "8px";
-	cell.style.color = "white";
-	cell.style.backgroundColor = "blue";
+	cell.style.borderStype = "1px solid black"
+	cell.style.color = "green";
+	var randNum = (Math.floor(Math.random() * 3) + 1)
+	if(randNum == 1){
+		cell.style.backgroundColor = "darkblue";
+	}
+	else{
+		cell.style.backgroundColor = "blue";
+	}
 	
 	if (whichKind == "th"){
 		cell.style.color = "navy";
@@ -104,7 +112,7 @@ function visibleSelect(current){
 }
 
 function unSelect(current){
-	current.style.border = "1px inset";
+	current.style.border = "0px";
 }
 
 //starting state of selected cell:
@@ -212,7 +220,7 @@ function goAntStyle(){
 	var direction = 'N';
 	color = currentCell.innerHTML;
 	
-	for(var i = 0; i < 22000; i++){
+	for(var i = 0; i < 44000; i++){
 		
 	if(color != ' '){
 		
