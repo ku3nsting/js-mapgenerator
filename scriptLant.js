@@ -40,12 +40,15 @@ function addCell(content, whichRow, whichKind, array){
 	cell.style.fontSize = "8px";
 	cell.style.borderStype = "1px solid black"
 	cell.style.color = "green";
-	var randNum = (Math.floor(Math.random() * 3) + 1)
-	if(randNum == 1){
+	var randNum = (Math.floor(Math.random() * 8) + 1)
+	if(randNum < 3){
 		cell.style.backgroundColor = "darkblue";
 	}
-	else{
+	else if(randNum < 5){
 		cell.style.backgroundColor = "blue";
+	}
+	else{
+		cell.style.backgroundColor = "mediumblue";
 	}
 	
 	if (whichKind == "th"){
@@ -121,17 +124,34 @@ visibleSelect(currentCell);
 
 function markIt(){
 	currentCell.style.backgroundColor = "yellow";
-	//console.log("call went through! " + x);
 }
 
 function markW(){
-	currentCell.style.backgroundColor = "lime";
-	//console.log("call went through! " + x);
+	if(color == "o"){
+		var randNum = (Math.floor(Math.random() * 20) + 1);
+		if(randNum < 20){
+		currentCell.style.backgroundColor = "forestgreen";
+		}
+		else{
+			currentCell.style.backgroundColor = "deeppink";
+		}
+	}
+	else{
+		currentCell.style.backgroundColor = "burlywood";
+	}
 }
 
 function markB(){
-	currentCell.style.backgroundColor = "green";
-	//console.log("call went through! " + x);
+		var randNum = (Math.floor(Math.random() * 20) + 1);
+		if(randNum < 15){
+		currentCell.style.backgroundColor = "green";
+		}
+		else if(randNum < 17){
+		currentCell.style.backgroundColor = "darkgreen";
+		}
+		else{
+			currentCell.style.backgroundColor = "darkolivegreen";
+		}
 }
 
 function goRight(){
@@ -222,10 +242,10 @@ function goAntStyle(){
 	
 	for(var i = 0; i < 44000; i++){
 		
-	if(color != ' '){
+	if(color != '-'){
 		
 		markW();
-		currentCell.innerHTML = ' ';
+		currentCell.innerHTML = '-';
 		
 		if (direction == 'N'){
 			direction = 'E';
@@ -247,7 +267,7 @@ function goAntStyle(){
 		color = currentCell.innerHTML;
 	}
 	
-	if(color == ' '){
+	if(color == '-'){
 		markB();
 		currentCell.innerHTML = 'o';
 		
